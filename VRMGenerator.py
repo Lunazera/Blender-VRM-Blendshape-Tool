@@ -3,7 +3,7 @@ import bpy
 from bpy.types import Object, Mesh, Armature, PropertyGroup
 from bpy.props import StringProperty, CollectionProperty
 
-## VRM0 Blendshape Generator ##
+## VRM0 Blendshape Tool ##
 # author: lunazera
 # originally adapated from script by lumibnuuy
 
