@@ -1,9 +1,11 @@
-# LZ's VRM Blendshape Toop for blender
+# LZ's VRM Blendshape Tool for blender
 
 Simple tool to assist with your VRM model for quickly generating blendshape proxies from your meshes shapekeys.
 Tool will appear along the right sidebar menu under "LZTools" when you are in Object Mode.
 
-Requires [VRM Add-on for Blender](https://vrm-addon-for-blender.info/en-us/).
+Requires [VRM Add-on for Blender](https://vrm-addon-for-blender.info/en-us/)
+
+![Screenshot of the add on window in blender](example_image.png "VRM Blendshape Tool Example")
 
 ## Installation:
 - Drag the zip file into blender, and accept to install.
