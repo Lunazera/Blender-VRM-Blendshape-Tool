@@ -19,12 +19,9 @@ Requires [VRM Add-on for Blender](https://vrm-addon-for-blender.info/en-us/)
 4. Toggle *Combine Existing* if you want shapekeys to combine with existing blendshapes if they already exist.
 5. Click *Generate Blendshapes* to run
 
-## Features:
+## Options:
 - Clear existing blendshape proxies before generating
 - Combine similarly-named blendshapes from additional meshes
 - Ignores blendshapes that are not written in english (japanese characters can break some programs)
 - Reads the Mute status of shapekeys, and skips generating from muted (unchecked) shapekeys
 - Name-matches preset VRM blendshapes (like 'neutral', 'a', 'i', 'o')
-
-## TODO:
-- Add toggle for "ignore muted shapekeys", "ignore non-english" and "match VRM presets"
