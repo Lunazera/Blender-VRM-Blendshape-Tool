@@ -76,25 +76,23 @@ class WM_OT_Generate(Operator):
         scene = context.scene
         vrmtool = scene.vrm_tool
         
-        armature = vrmtool.name_armature
-        mesh = vrmtool.name_mesh
+        armature = vrmtool.name_armature.lstrip()
+        mesh = vrmtool.name_mesh.lstrip()
         clear = vrmtool.option_clear
         meshList = vrmtool.list_mesh
         combine = vrmtool.option_combine
         
         if armature and mesh:
-
-            armature_object = bpy.data.objects[armature] 
-            mesh_object = bpy.data.objects[mesh]
-            
-            VRM0_Generate_Blendshapes(armature_object, mesh_object, clear, True, combine)
-            
-            if meshList:
-
-                split_list_mesh = meshList.split(',') # Create list from comma-separated list string, removing leading whitespaces
-                for m in split_list_mesh:
-                    if m.lstrip() in bpy.data.objects:
-                        VRM0_Generate_Blendshapes(armature_object, bpy.data.objects[m.lstrip()], False, False, combine)
+            if armature in bpy.data.objects and mesh in bpy.data.objects:
+                armature_object = bpy.data.objects[armature] 
+                mesh_object = bpy.data.objects[mesh]
+                VRM0_Generate_Blendshapes(armature_object, mesh_object, clear, True, combine)  # Generate blendshapes from main mesh
+                
+                if meshList:
+                    split_list_mesh = meshList.split(',') # Create list from comma-separated list string, removing leading whitespaces
+                    for m in split_list_mesh:
+                        if m.lstrip() in bpy.data.objects:
+                            VRM0_Generate_Blendshapes(armature_object, bpy.data.objects[m.lstrip()], False, False, combine)  # generate blendshapes from additional meshes
             
             return {'FINISHED'}
         else:
