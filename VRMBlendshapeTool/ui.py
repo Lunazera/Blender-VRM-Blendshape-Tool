@@ -62,6 +62,21 @@ class VRMTOOL_PG_SceneProperties(PropertyGroup):
         description="If blendshape proxy already exists, binds mesh into it",
         default = False
         )
+    option_english: BoolProperty(
+        name="Skip non-english shapekeys",
+        description="Ignores shapekeys with non-english characters, which sometimes has problems in other programs",
+        default = False
+        )
+    option_mute: BoolProperty(
+        name="Skip muted shapekeys",
+        description="Ignores shapekeys if they are muted (unchecked)",
+        default = False
+        )
+    option_presets: BoolProperty(
+        name="Match to VRM Presets",
+        description="Will set blendshape to VRM preset if the name matches (only for main Mesh)",
+        default = False
+        )
 
 
 # ------------------------------------------------------------------------
@@ -81,18 +96,22 @@ class WM_OT_Generate(Operator):
         clear = vrmtool.option_clear
         meshList = vrmtool.list_mesh
         combine = vrmtool.option_combine
+        checkEnglish = vrmtool.option_english
+        checkMute = vrmtool.option_mute
+        checkPresets = vrmtool.option_presets
+
         
         if armature and mesh:
             if armature in bpy.data.objects and mesh in bpy.data.objects:
                 armature_object = bpy.data.objects[armature] 
                 mesh_object = bpy.data.objects[mesh]
-                VRM0_Generate_Blendshapes(armature_object, mesh_object, clear, True, combine)  # Generate blendshapes from main mesh
+                VRM0_Generate_Blendshapes(armature_object, mesh_object, clear, checkPresets, combine, checkEnglish, checkMute)  # Generate blendshapes from main mesh
                 
                 if meshList:
                     split_list_mesh = meshList.split(',') # Create list from comma-separated list string, removing leading whitespaces
                     for m in split_list_mesh:
                         if m.lstrip() in bpy.data.objects:
-                            VRM0_Generate_Blendshapes(armature_object, bpy.data.objects[m.lstrip()], False, False, combine)  # generate blendshapes from additional meshes
+                            VRM0_Generate_Blendshapes(armature_object, bpy.data.objects[m.lstrip()], False, False, combine, checkEnglish, checkMute)  # generate blendshapes from additional meshes
             
             return {'FINISHED'}
         else:
@@ -128,11 +147,17 @@ class OBJECT_PT_VRMBlendshapeTool(Panel):
         layout.prop(vrmtool, "name_armature")
         layout.prop(vrmtool, "name_mesh")
         layout.prop(vrmtool, "option_clear")
+        layout.prop(vrmtool, "option_presets")
 
         layout.separator(factor=3)
-        layout.label(text="Additional meshes in comma-separated list")
+        layout.label(text="Add extra meshes in comma-separated list")
         layout.prop(vrmtool, "list_mesh")
         layout.prop(vrmtool, "option_combine")
+
+        layout.separator(factor=3)
+        layout.label(text="Additional options")
+        layout.prop(vrmtool, "option_mute")
+        layout.prop(vrmtool, "option_english")
         
         layout.separator(factor=3)
         layout.operator("wm.generate")

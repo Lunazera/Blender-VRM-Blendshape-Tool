@@ -16,10 +16,6 @@ from bpy.types import (Panel,
                        Object, Mesh, Armature
                        )
                        
-                       
-## VRM0 Blendshape Tool ##
-# author: lunazera
-# originally adapated from script by lumibnuuy
 
 def isEnglish(s):
         """Check if text is English (following utf-8 encoding)
@@ -31,16 +27,20 @@ def isEnglish(s):
         else:
             return True
 
-def VRM0_Generate_Blendshapes(armature: Armature, mesh_object: Object, clear=True, match_extra=False, combine=False) -> None:
+def VRM0_Generate_Blendshapes(armature: Armature, mesh_object: Object, clear=True, matchPresets=False, combine=False, checkEnglish=True, checkMute=True) -> None:
     """Adds VRM Blendshape Proxies to armature based on a mesh's shapekeys
     
     This will loop through all shapekeys on a mesh and create blendshape clips, checking to make sure
     the name is valid and matching to VRM's default blendshapes (like 'a', 'i', 'o'...)
     
     clear: Deletes existing blendshapes
-    match_extra: Checks to match against basic expressions (joy, angry, look up, etc)
+    matchPresets: Checks to match against basic expressions (joy, angry, look up, etc)
     combine: If the blendshape clip already exists, bind the mesh to it.
-    
+    checkEnglish: skips non-english characters
+    checkMute: skips muted shapekeys
+
+    author: lunazera
+    originally adapated from script by lumibnuuy
     """
     mesh = mesh_object.data
     if not isinstance(mesh, Mesh):
@@ -64,8 +64,6 @@ def VRM0_Generate_Blendshapes(armature: Armature, mesh_object: Object, clear=Tru
     if not hasattr(blend_shape_master, "blend_shape_groups"):
         return
     blend_shape_groups = blend_shape_master.blend_shape_groups
-    # dump(blend_shape_groups)
-
     shape_key = bpy.context.blend_data.shape_keys.get(mesh.shape_keys.name)
 
     proxy = bpy.data.objects.new(mesh_object.name + "_vrm_blendshape_proxy", None)
@@ -79,40 +77,36 @@ def VRM0_Generate_Blendshapes(armature: Armature, mesh_object: Object, clear=Tru
 
     # For each shapekey on the mesh
     for i, key_block in enumerate(mesh.shape_keys.key_blocks):
-        
         # Basic checks for the shapekey
         # Make sure it isn't the initial basis, that the text is in english, and that the shapekey isn't muted.
         if i == 0:
             continue
         if len(key_block.name) == 0:
             continue
-        if not isEnglish(key_block.name):
+        if checkEnglish and not isEnglish(key_block.name):  # Skip if non-english characters
             continue
-        if key_block.mute:
+        if checkMute and key_block.mute:  # Skip if muted
             continue
         
         presetName = 'unknown' 
-        # Match shapekeys to known VRM defaults
-        match key_block.name.lower():
-            case 'a':
-                presetName = 'a'
-            case 'e':
-                presetName = 'e'
-            case 'i':
-                presetName = 'i'
-            case 'o':
-                presetName = 'o'
-            case 'u':
-                presetName = 'u'
-            case 'neutral':
-                presetName = 'neutral'
-            case 'blink_l':
-                presetName = 'blink_l'
-            case 'blink_r':
-                presetName = 'blink_r'
-        
-        if match_extra:
+        if matchPresets:
             match key_block.name.lower():
+                case 'a':
+                    presetName = 'a'
+                case 'e':
+                    presetName = 'e'
+                case 'i':
+                    presetName = 'i'
+                case 'o':
+                    presetName = 'o'
+                case 'u':
+                    presetName = 'u'
+                case 'neutral':
+                    presetName = 'neutral'
+                case 'blink_l':
+                    presetName = 'blink_l'
+                case 'blink_r':
+                    presetName = 'blink_r'
                 case 'joy':
                     presetName = 'joy'
                 case 'angry':
@@ -136,7 +130,7 @@ def VRM0_Generate_Blendshapes(armature: Armature, mesh_object: Object, clear=Tru
         # Otherwise make a new clip
         if combine:
             if key_block.name in blend_shape_groups:
-                print("Found " + key_block.name)
+                print("Binding " + key_block.name + " into existing proxy")
                 bind = blend_shape_groups[key_block.name].binds.add()
                 bind.mesh.mesh_object_name = mesh_object.name
                 bind.index = key_block.name
