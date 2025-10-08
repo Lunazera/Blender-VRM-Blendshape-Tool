@@ -21,9 +21,18 @@ from bpy.types import (Panel,
 # author: lunazera
 # originally adapated from script by lumibnuuy
 
+def isEnglish(s):
+        """Check if text is English (following utf-8 encoding)
+        """
+        try:
+            s.encode(encoding='utf-8').decode('ascii')
+        except UnicodeDecodeError:
+            return False
+        else:
+            return True
 
-def add_vrm0_blendshape_proxy(armature: Armature, mesh_object: Object, clear=True, match_extra=False, combine=False) -> None:
-    """Adds VRM Blendshape Clips to armature based on a mesh's shapekeys
+def VRM0_Generate_Blendshapes(armature: Armature, mesh_object: Object, clear=True, match_extra=False, combine=False) -> None:
+    """Adds VRM Blendshape Proxies to armature based on a mesh's shapekeys
     
     This will loop through all shapekeys on a mesh and create blendshape clips, checking to make sure
     the name is valid and matching to VRM's default blendshapes (like 'a', 'i', 'o'...)

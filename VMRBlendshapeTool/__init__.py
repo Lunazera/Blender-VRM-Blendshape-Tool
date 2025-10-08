@@ -10,22 +10,6 @@ bl_info = {
 
 import bpy
 
-def isEnglish(s):
-        """Check if text is English (following utf-8 encoding)
-        """
-        try:
-            s.encode(encoding='utf-8').decode('ascii')
-        except UnicodeDecodeError:
-            return False
-        else:
-            return True
-
-classes = (
-    WM_OT_Generate,
-    VRMTOOL_PG_SceneProperties,
-    OBJECT_PT_VRMBlendshapeTool
-)
-
 def register():
     from . import ui
     ui.register()
