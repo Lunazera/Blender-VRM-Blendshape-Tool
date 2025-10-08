@@ -8,6 +8,7 @@ Requires [VRM Add-on for Blender](https://vrm-addon-for-blender.info/en-us/)
 ![Screenshot of the add on window in blender](example_image.png "VRM Blendshape Tool Example")
 
 ## Installation:
+- Download the latest zip under the *releases* folder or https://github.com/Lunazera/Blender-VRM-Blendshape-Tool/releases
 - Drag the zip file into blender, and accept to install.
 - or, under Edit > Preferences > Add Ons, click the top right button to install from disk and install the zip file
 
