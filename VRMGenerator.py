@@ -245,7 +245,7 @@ class WM_OT_Generate(Operator):
             armature_object = bpy.data.objects[armature] 
             mesh_object = bpy.data.objects[mesh]
             
-            add_vrm0_blendshape_proxy(armature_object, mesh_object, True, True)
+            add_vrm0_blendshape_proxy(armature_object, mesh_object, clear, True)
             
             if meshList:
                 split_list_mesh = meshList.split(',')
