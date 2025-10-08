@@ -27,7 +27,7 @@ def isEnglish(s):
         else:
             return True
 
-def VRM0_Generate_Blendshapes(armature: Armature, mesh_object: Object, clear=True, matchPresets=False, combine=False, checkEnglish=True, checkMute=True) -> None:
+def VRM0_Generate_Blendshapes(armature: Armature, mesh_object: Object, clear=True, matchPresets=False, combine=False, checkEnglish=True, checkMute=True, checkVRoid=False, stripVRoid=False) -> None:
     """Adds VRM Blendshape Proxies to armature based on a mesh's shapekeys
     
     This will loop through all shapekeys on a mesh and create blendshape clips, checking to make sure
@@ -78,6 +78,7 @@ def VRM0_Generate_Blendshapes(armature: Armature, mesh_object: Object, clear=Tru
     # For each shapekey on the mesh
     for i, key_block in enumerate(mesh.shape_keys.key_blocks):
         # Basic checks for the shapekey
+
         # Make sure it isn't the initial basis, that the text is in english, and that the shapekey isn't muted.
         if i == 0:
             continue
@@ -88,9 +89,36 @@ def VRM0_Generate_Blendshapes(armature: Armature, mesh_object: Object, clear=Tru
         if checkMute and key_block.mute:  # Skip if muted
             continue
         
+        shapekey = key_block.name
+
+        # Strip out VRoid common prefixes
+        if checkVRoid:
+            if shapekey.endswith(("_A", "_E", "_I", "_O", "_U")):
+                shapekey = shapekey.removeprefix("Fcl_MTH_")
+            elif shapekey.startswith("Fcl_ALL"):
+                shapekey = shapekey.removeprefix("Fcl_ALL_")
+            elif "EYE_Close_L" in shapekey:
+                shapekey = "Blink_L"
+            elif "EYE_Close_R" in shapekey:
+                shapekey = "Blink_R"
+            elif "EYE_Close" in shapekey:
+                shapekey = "Blink"
+        
+        if stripVRoid:
+            if shapekey.startswith("Fcl_ALL"):
+                shapekey = shapekey.removeprefix("Fcl_ALL_")
+            if shapekey.startswith("Fcl_BRW_"):
+                shapekey = "brow_" + shapekey.removeprefix("Fcl_BRW_")
+            if shapekey.startswith("Fcl_EYE_"):
+                shapekey = "eye_" + shapekey.removeprefix("Fcl_EYE_")
+            if shapekey.startswith("Fcl_MTH_"):
+                shapekey = "mouth_" + shapekey.removeprefix("Fcl_MTH_")
+            if shapekey.startswith("Fcl_HA_"):
+                shapekey = shapekey.removeprefix("Fcl_HA_")
+        
         presetName = 'unknown' 
         if matchPresets:
-            match key_block.name.lower():
+            match shapekey.lower():
                 case 'a':
                     presetName = 'a'
                 case 'e':
@@ -123,28 +151,32 @@ def VRM0_Generate_Blendshapes(armature: Armature, mesh_object: Object, clear=Tru
                     presetName = 'loop left'
                 case 'loop right':
                     presetName = 'loop right'
+                case 'blink':
+                    presetName = 'blink'
+        
+
           
-        print(key_block.name + " as " + presetName)
+        print(shapekey + " as " + presetName)
         
         # Check if the blendshape clip already exists with the same name. If it does, and we set to combine, then add the mesh into the bind. 
         # Otherwise make a new clip
         if combine:
-            if key_block.name in blend_shape_groups:
-                print("Binding " + key_block.name + " into existing proxy")
-                bind = blend_shape_groups[key_block.name].binds.add()
+            if shapekey in blend_shape_groups:
+                print("Binding " + shapekey + " into existing proxy")
+                bind = blend_shape_groups[shapekey].binds.add()
                 bind.mesh.mesh_object_name = mesh_object.name
                 bind.index = key_block.name
             else:
                 blend_shape_group = blend_shape_groups.add()
-                blend_shape_group.name = key_block.name.strip()        
+                blend_shape_group.name = shapekey.strip()        
                 blend_shape_group.preset_name = presetName
                      
                 bind = blend_shape_group.binds.add()
                 bind.mesh.mesh_object_name = mesh_object.name
-                bind.index = key_block.name            
+                bind.index = key_block.name
         else:
             blend_shape_group = blend_shape_groups.add()
-            blend_shape_group.name = key_block.name.strip()        
+            blend_shape_group.name = shapekey.strip()        
             blend_shape_group.preset_name = presetName
                  
             bind = blend_shape_group.binds.add()
