@@ -1,4 +1,7 @@
 # LZ's VRM Blendshape Tool for blender
+![Blender](https://img.shields.io/badge/blender-%23F5792A.svg?style=for-the-badge&logo=blender&logoColor=white)
+![TransBadge](https://pride-badges.pony.workers.dev/static/v1?label=trans%20rights&stripeWidth=6&stripeColors=5BCEFA,F5A9B8,FFFFFF,F5A9B8,5BCEFA)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 Simple tool to assist with your VRM model for quickly generating blendshape proxies from your meshes shapekeys.
 Tool will appear along the right sidebar menu under "LZTools" when you are in Object Mode.
