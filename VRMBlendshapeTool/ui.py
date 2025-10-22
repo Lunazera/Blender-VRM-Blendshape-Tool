@@ -136,7 +136,7 @@ class WM_OT_Generate(Operator):
 
 class OBJECT_PT_VRMBlendshapeTool(Panel):
     bl_label = "VRM Blendshape Tool"
-    bl_idname = "OBJECT_PT_custom_panel"
+    bl_idname = "OBJECT_PT_LZTools_VRMBlendshapeTool"
     bl_space_type = "VIEW_3D"   
     bl_region_type = "UI"
     bl_category = "LZTools"
