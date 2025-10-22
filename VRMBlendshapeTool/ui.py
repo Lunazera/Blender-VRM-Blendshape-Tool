@@ -95,7 +95,7 @@ class VRMTOOL_PG_SceneProperties(PropertyGroup):
 
 class WM_OT_Generate(Operator):
     bl_label = "Generate Blendshapes"
-    bl_idname = "wm.generate" 
+    bl_idname = "wm.generateblendshapes" 
 
     def execute(self, context):
         scene = context.scene
@@ -175,7 +175,7 @@ class OBJECT_PT_VRMBlendshapeTool(Panel):
 
         
         layout.separator(factor=3)
-        layout.operator("wm.generate")
+        layout.operator("wm.generateblendshapes")
         layout.separator()
 
 

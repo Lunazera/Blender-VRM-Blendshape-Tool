@@ -2,7 +2,7 @@ schema_version = "1.0.0"
 
 
 id = "LZ_VRM_Blendshape_Tool"
-version = "1.1.1"
+version = "1.1.2"
 name = "VRM Blendshape Tool"
 tagline = "Quickly generate blendshape proxies from shapekeys on your meshes"
 maintainer = "lunazera"
